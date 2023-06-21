@@ -1,6 +1,22 @@
 .dialog {
+  position: abolute;
+  top:0; 
+  bottom: 0;
+  left: 0;
+  right: 0;
   background: transparent;
   border: 0;
+}
+
+.dialog::before {
+  position: fixed;
+  top:0; 
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.5);
+  content: " ";
+  z-index: 10;
 }
 
 .dialog-box {
@@ -21,7 +37,9 @@
   text-align: left;
   overflow-y: hidden;
   font-size: 1rem;
+  z-index: 11;
 }
+
 
 .dialog-content {
   max-height: calc(80% - 2rem - 1.5rem - 42px);

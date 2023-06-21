@@ -7,7 +7,7 @@ interface BaseDialogProps {
   title?: string;
   isOpen: boolean;
   onClose: () => void;
-  closeOnOverlayClick: boolean;
+  closeOnOverlayClick?: boolean;
   children?: React.ReactNode;
 }
 
@@ -20,10 +20,12 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
 }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
+
+  if (dialogRef?.current && typeof HTMLDialogElement !== "function") {
+    dialogPolyfill.registerDialog(dialogRef?.current);
+  }
+
   useEffect(() => {
-    if (dialogRef.current) {
-      dialogPolyfill.registerDialog(dialogRef.current);
-    }
     const close = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         onClose();
@@ -36,15 +38,6 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
     };
   }, [onClose]);
 
-  useEffect(() => {
-    if (dialogRef.current) {
-      if (isOpen) {
-        dialogRef.current.showModal();
-      } else {
-        dialogRef.current.close();
-      }
-    }
-  }, [isOpen]);
 
   const handleOverlayClick = () => {
     if (closeOnOverlayClick) {
@@ -53,14 +46,14 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
   };
 
   return (
-    <dialog ref={dialogRef} className='dialog' onClick={handleOverlayClick}>
+    <dialog ref={dialogRef} className='dialog' onClick={handleOverlayClick} role="dialog" open={isOpen} aria-hidden={!isOpen}>
       <div className="dialog-box" onClick={(e) => e.stopPropagation()}>
         <div className="dialog-header">
           {title && <h2>{title}</h2>}
-          <button type="button" onClick={onClose} className="close-button">
+          <button type="button" onClick={onClose} aria-label='Fechar' role="close-button" className="close-button">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 1L8 8L15 15" stroke="black" stroke-width="1.2"/>
-              <path d="M1 1L8 8L0.999999 15" stroke="black" stroke-width="1.2"/>
+              <path d="M15 1L8 8L15 15" stroke="black" strokeWidth="1.2"/>
+              <path d="M1 1L8 8L0.999999 15" stroke="black" strokeWidth="1.2"/>
             </svg>
           </button>
         </div>
