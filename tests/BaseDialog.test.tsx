@@ -4,7 +4,9 @@ import { render, screen, fireEvent } from '@testing-library/react';
 
 import BaseDialog from "../src/components/BaseDialog";
 
-import {describe, it, expect, vi, afterEach, beforeAll } from 'vitest'
+import {describe, it, expect, vi, afterEach } from 'vitest'
+
+const DialogDefaultParagraph = <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
 
 vi.mock('dialog-polyfill', () => {
   return {
@@ -23,7 +25,7 @@ type DialogOptions = {
 }
 const renderDialog = (
   options: DialogOptions,
-  dialogContent: string | JSX.Element = <p> Mussum Ipsum, cacilds vidis litro abertis. Per aumento de cachacis, eu reclamis.Si num tem leite então bota uma pinga aí cumpadi!Suco de cevadiss, é um leite divinis. </p>
+  dialogContent: string | JSX.Element = DialogDefaultParagraph
 ) => {
   const { isOpen, onClose, closeOnOverlayClick, title } = options;
   return render(
@@ -37,27 +39,17 @@ describe('BaseDialog', () => {
   const handleClose = vi.fn();
   const longDialogContent = (
     <>
-        <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-        </p>
+        { DialogDefaultParagraph }
         <img src='https://placehold.co/600x338' style={{
           width: '100%',
           height: 'auto'
         }} width={600} height={338} />
-        <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-        </p>
+        { DialogDefaultParagraph }
     </>
   ); 
 
   afterEach(() => {
     vi.clearAllMocks();
-  });
-
-  beforeAll(() => {
-    HTMLDialogElement.prototype.show = vi.fn();
-    HTMLDialogElement.prototype.showModal = vi.fn();
-    HTMLDialogElement.prototype.close = vi.fn();
   });
 
   it('should render when isOpen is true', async () => {
@@ -89,26 +81,55 @@ describe('BaseDialog', () => {
 
   });
 
-  // it('should call onClose when the Escape key is pressed', () => {
-  //   // Implementar a verificação
-  // });
-
-  // it('should call onClose when overlay is clicked and closeOnOverlayClick is set to true', () => {
-  //   // Implementar a verificação
-  // });
-
-  // it('should not call onClose when overlay is clicked and closeOnOverlayClick is set to false', () => {
-  //   // Implementar a verificação
-  // });
-
-  // it('should render the content and title correctly in the Dialog', () => {
-  //   // Implementar a verificação
-  // });
-
-  it('should handle scrolling content correctly, especially when there are too many elements in the Dialog', async () => {
-    await renderDialog({ isOpen: true, onClose: handleClose, closeOnOverlayClick: true }, longDialogContent);
-
+  it('should call onClose when the Escape key is pressed', async () => {
+    await renderDialog({ isOpen: true, onClose: handleClose, closeOnOverlayClick: true });
+  
     const dialogElement = await screen.findByRole('dialog');
+  
     expect(dialogElement).toBeInTheDocument();
+  
+    fireEvent.keyDown(dialogElement, { key: 'Escape', code: 'Escape' });
+  
+    expect(handleClose).toHaveBeenCalled();
+  });
+
+  it('should call onClose when overlay is clicked and closeOnOverlayClick is set to true', async () => {
+    await renderDialog({ isOpen: true, onClose: handleClose, closeOnOverlayClick: true });
+  
+    const dialogElement = await screen.findByRole('dialog');
+    
+    expect(dialogElement).toBeInTheDocument();
+
+    fireEvent.click(dialogElement);
+  
+    expect(handleClose).toHaveBeenCalled();
+  });
+  
+  it('should not call onClose when overlay is clicked and closeOnOverlayClick is set to false', async () => {
+    await renderDialog({ isOpen: true, onClose: handleClose, closeOnOverlayClick: false });
+  
+    const dialogElement = await screen.findByRole('dialog');
+    
+    expect(dialogElement).toBeInTheDocument();
+  
+    fireEvent.click(dialogElement);
+  
+    expect(handleClose).not.toHaveBeenCalled();
+  });
+
+  it('should render the content and title correctly in the Dialog', async () => {
+    const dialogTitle = "Meu Título";
+    const dialogContentText = "Texto do conteúdo do Dialog";
+  
+    await renderDialog(
+      { isOpen: true, onClose: handleClose, closeOnOverlayClick: true, title: dialogTitle },
+      <p>{dialogContentText}</p>
+    );
+  
+    const titleElement = await screen.findByText(dialogTitle);
+    const contentElement = await screen.findByText(dialogContentText);
+  
+    expect(titleElement).toBeInTheDocument();
+    expect(contentElement).toBeInTheDocument();
   });
 });

@@ -26,6 +26,14 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
   }
 
   useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     const close = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         onClose();
@@ -57,7 +65,7 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
             </svg>
           </button>
         </div>
-        <div className="dialog-content">
+        <div className="dialog-content" role='dialog-content'>
           {children}
         </div>
       </div>
