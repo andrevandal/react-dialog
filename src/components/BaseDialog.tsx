@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react';
-import dialogPolyfill from 'dialog-polyfill';
+let dialogPolyfill: any;
 
 import './BaseDialog.css';
 
 interface BaseDialogProps {
   title?: string;
-  isOpen: boolean;
+  isOpen?: boolean;
   onClose: () => void;
   closeOnOverlayClick?: boolean;
   children?: React.ReactNode;
@@ -19,33 +19,36 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
   children,
 }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
-
-
-  if (dialogRef?.current && typeof HTMLDialogElement !== "function") {
-    dialogPolyfill.registerDialog(dialogRef?.current);
-  }
+  const open = isOpen || false;
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
+    const loadDialogPolyfill = async () => {
+      dialogPolyfill = (await import('dialog-polyfill')).default;
+    };
+    if (dialogRef.current && typeof HTMLDialogElement !== "function") {
+      if (!dialogPolyfill) {
+          loadDialogPolyfill().then(() => {
+            dialogPolyfill.registerDialog(dialogRef.current);
+          });
+        }
     }
-  }, [isOpen]);
 
-  useEffect(() => {
-    const close = (event: KeyboardEvent) => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         onClose();
       }
     };
-    document.addEventListener('keydown', close);
+
+    document.addEventListener('keydown', handleEscapeKey);
 
     return () => {
-      document.removeEventListener('keydown', close);
+      document.removeEventListener('keydown', handleEscapeKey);
     };
   }, [onClose]);
 
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : 'auto';
+  }, [open]);
 
   const handleOverlayClick = () => {
     if (closeOnOverlayClick) {
@@ -53,9 +56,13 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
     }
   };
 
+  const handleInnerClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
-    <dialog ref={dialogRef} className='dialog' onClick={handleOverlayClick} role="dialog" open={isOpen} aria-hidden={!isOpen}>
-      <div className="dialog-box" onClick={(e) => e.stopPropagation()}>
+    <dialog ref={dialogRef} className='dialog' onClick={handleOverlayClick} role="dialog" open={open} aria-hidden={!open}>
+      <div className="dialog-box" onClick={handleInnerClick}>
         <div className="dialog-header">
           {title && <h2>{title}</h2>}
           <button type="button" onClick={onClose} aria-label='Fechar' role="close-button" className="close-button">
