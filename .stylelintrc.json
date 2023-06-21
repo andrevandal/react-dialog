@@ -1,0 +1,8 @@
+{
+  "extends": ["stylelint-config-standard"],
+  "plugins": ["stylelint-rem-over-px", "stylelint-use-nesting"],
+  "rules": {
+    "rem-over-px/rem-over-px": true,
+    "csstools/use-nesting": "always"
+  }
+}

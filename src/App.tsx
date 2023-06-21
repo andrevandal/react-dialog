@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import './styles/App.css';
+import * as React from 'react';
+import { useState }  from 'react';
+import './App.css';
 import BaseDialog from './components/BaseDialog.tsx';
 
 const DialogButton: React.FC<{ onClick: () => void; label: string }> = ({
@@ -68,7 +69,7 @@ function App() {
         <img src='https://placehold.co/600x338' style={{
           width: '100%',
           height: 'auto'
-        }} width={600} height={338} />
+        }} width={600} height={338} alt="" />
         <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
         </p>

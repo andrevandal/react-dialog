@@ -1,4 +1,10 @@
-import { useEffect, useRef } from 'react';
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/aria-role */
+import * as React from 'react';
+import { useEffect, useRef }  from 'react';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let dialogPolyfill: any;
 
 import './BaseDialog.css';
@@ -61,7 +67,7 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
   };
 
   return (
-    <dialog ref={dialogRef} className='dialog' onClick={handleOverlayClick} role="dialog" open={open} aria-hidden={!open}>
+    <dialog ref={dialogRef} className='dialog' onClick={handleOverlayClick} open={open} aria-hidden={!open}>
       <div className="dialog-box" onClick={handleInnerClick}>
         <div className="dialog-header">
           {title && <h2>{title}</h2>}

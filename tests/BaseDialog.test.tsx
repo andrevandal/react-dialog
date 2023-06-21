@@ -37,16 +37,6 @@ const renderDialog = (
 
 describe('BaseDialog', () => {
   const handleClose = vi.fn();
-  const longDialogContent = (
-    <>
-        { DialogDefaultParagraph }
-        <img src='https://placehold.co/600x338' style={{
-          width: '100%',
-          height: 'auto'
-        }} width={600} height={338} />
-        { DialogDefaultParagraph }
-    </>
-  ); 
 
   afterEach(() => {
     vi.clearAllMocks();
