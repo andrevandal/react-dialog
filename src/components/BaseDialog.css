@@ -22,12 +22,10 @@
   background-color: white;
   width: 100%;
   max-width: 23.4375rem;
-  max-height: 80%;
+  max-height: 90%;
   color: #000;
   display: flex;
   flex-direction: column;
-  border-top-left-radius: 0.25rem;
-  border-top-right-radius: 0.25rem;
   text-align: left;
   overflow-y: hidden;
   font-size: 1rem;
@@ -36,28 +34,36 @@
 
 
 .dialog-content {
-  max-height: calc(80% - 2rem - 1.5rem - 2.625rem);
+  max-height: calc(90% - 2rem - 1.5rem - 2.625rem);
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgb(0 0 0 / 30%) transparent;
   padding-right: 0.25rem;
 
-&::-webkit-scrollbar {
-  width: 0.5rem;
-}
+  & > p:first-child {
+    margin-top: 0;
+  }
 
-&::-webkit-scrollbar-thumb {
-  background-color: rgb(0 0 0 / 30%);
-  border-radius: 0.25rem;
-}
+  & > p:last-child {
+    margin-bottom: 0;
+  }
 
-&::-webkit-scrollbar-track {
-  background-color: transparent;
-}
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
 
-&::-webkit-scrollbar-button {
-  display: none;
-}
+  &::-webkit-scrollbar-thumb {
+    background-color: rgb(0 0 0 / 30%);
+    border-radius: 0.25rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
 }
 
 .dialog-header {
@@ -97,7 +103,6 @@
     top: 0;
     bottom: 0;
     max-height: 100%;
-    border-top-right-radius: 0;
   }
 
   .dialog-content {
